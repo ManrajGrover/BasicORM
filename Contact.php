@@ -1,8 +1,14 @@
 <?php
-    class Contacts {
+    class Contact {
         private $firstName;
         private $lastName;
         private $phoneNumber;
+
+        public function __construct($_firstName, $_lastName, $_phoneNumber) {
+            $this->firstName = $_firstName;
+            $this->lastName = $_lastName;
+            $this->phoneNumber = $_phoneNumber;
+        }
 
         public function getFirstName() {
             return $this->firstName;
