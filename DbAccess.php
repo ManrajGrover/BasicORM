@@ -16,7 +16,7 @@
             $this->dbName = $_dbName;
         }
 
-        private function connect() {
+        public function connect() {
             if ($this->conn === null) {
                 $options = array(
                     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
