@@ -8,6 +8,16 @@
             $this->connection = $this->db->connect();
         }
 
+        private function getObjects($contacts) {
+            $results = array();
+
+            foreach($contacts as $contact) {
+                $results[] = new Contact($contact["first_name"], $contact["last_name"], $contact["phone_number"]);
+            }
+
+            return $results;
+        }
+
         public function findByFirstName($_firstName) {
             if(!is_string($_firstName) || empty($_firstName)) {
                 throw new Error("Invalid parameters passed");
@@ -17,13 +27,7 @@
             $filters = array("first_name" => $_firstName);
             $results = $this->db->select("contact", $fields, $filters);
 
-            $contacts = array();
-
-            foreach($results as $row) {
-                $contacts[] = new Contact($row["first_name"], $row["last_name"], $row["phone_number"]);
-            }
-
-            return $contacts;
+            return $this->getObjects($results);
         }
 
         public function findByLastName($_lastName) {
@@ -35,13 +39,7 @@
             $filters = array("last_name" => $_lastName);
             $results = $this->db->select("contact", $fields, $filters);
 
-            $contacts = array();
-
-            foreach($results as $row) {
-                $contacts[] = new Contact($row["first_name"], $row["last_name"], $row["phone_number"]);
-            }
-
-            return $contacts;
+            return $this->getObjects($results);
         }
 
         public function findByPhoneNumber($_phoneNumber) {
@@ -53,13 +51,7 @@
             $filters = array("phone_number" => $_phoneNumber);
             $results = $this->db->select("contact", $fields, $filters);
 
-            $contacts = array();
-
-            foreach($results as $row) {
-                $contacts[] = new Contact($row["first_name"], $row["last_name"], $row["phone_number"]);
-            }
-
-            return $contacts;
+            return $this->getObjects($results);
         }
 
     }
