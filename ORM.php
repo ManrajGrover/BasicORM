@@ -1,8 +1,19 @@
 <?php
+    /**
+     * Require DbAccess
+     */
     require_once('DbAccess.php');
 
     class ORM {
 
+        /**
+         * Constructor for ORM, creates instance of DbAccess and stores the connection
+         * @param String $_dbHost   Database Host
+         * @param String $_port     Port Number
+         * @param String $_username User's username of database
+         * @param String $_password User's password for user of database
+         * @param String $_dbName   Database name
+         */
         public function __construct($_dbHost, $_port, $_username, $_password, $_dbName) {
             $this->db = new DbAccess($_dbHost, $_port, $_username, $_password, $_dbName);
             $this->connection = $this->db->connect();
