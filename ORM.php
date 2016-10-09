@@ -19,6 +19,11 @@
             $this->connection = $this->db->connect();
         }
 
+        /**
+         * Generates objects from results of query
+         * @param  Array $contacts  Query result whose objects need to be generated
+         * @return Array            Array of Objects 
+         */
         private function getObjects($contacts) {
             $results = array();
 
@@ -29,6 +34,11 @@
             return $results;
         }
 
+        /**
+         * Finds contacts by their first name
+         * @param  String $_firstName First name to be searched
+         * @return Array              Array of Objects of contacts with given first name
+         */
         public function findByFirstName($_firstName) {
             if(!is_string($_firstName) || empty($_firstName)) {
                 throw new Error("Invalid parameters passed");
@@ -41,6 +51,11 @@
             return $this->getObjects($results);
         }
 
+        /**
+         * Finds contacts by their last name
+         * @param  String $_lastName  Last name to be searched
+         * @return Array              Array of Objects of contacts with given last name
+         */
         public function findByLastName($_lastName) {
             if(!is_string($_lastName) || empty($_lastName)) {
                 throw new Error("Invalid parameters passed");
@@ -53,6 +68,11 @@
             return $this->getObjects($results);
         }
 
+        /**
+         * Finds contacts by their phone number
+         * @param  String $_phoneNumber Phone number to be searched
+         * @return Array                Array of Objects of contacts with given phone number
+         */
         public function findByPhoneNumber($_phoneNumber) {
             if(!is_string($_phoneNumber) || empty($_phoneNumber)) {
                 throw new Error("Invalid parameters passed");

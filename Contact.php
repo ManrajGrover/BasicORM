@@ -4,6 +4,12 @@
         private $lastName;
         private $phoneNumber;
 
+        /**
+         * Constructor of Contact
+         * @param String $_firstName   First name of contact
+         * @param String $_lastName    Last name of contact
+         * @param String $_phoneNumber Phone number of contact
+         */
         public function __construct($_firstName, $_lastName, $_phoneNumber) {
             $this->firstName = $_firstName;
             $this->lastName = $_lastName;
