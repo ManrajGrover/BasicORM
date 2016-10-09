@@ -48,9 +48,8 @@
         public function query($_query, $params) {
             $db_connect = $this->connect();
             $_query->execute($params);
-            $result = $_query->fetchAll();
 
-            return $result;
+            return $_query->fetchAll();
         }
 
         /**
@@ -80,9 +79,8 @@
             }
             
             $query = $db_connect->prepare($prepare_query);
-            $results = $this->query($query, $_where);
             
-            return $results;
+            return $this->query($query, $_where);
         }
     }
 ?>
