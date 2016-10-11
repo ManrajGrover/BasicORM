@@ -14,7 +14,7 @@
     $contacts = $orm->findByFirstName("Ram");
     printContacts($contacts);
 
-    echo "Contacts with First Name Singh are: \n";
+    echo "Contacts with Last Name Singh are: \n";
     $contacts = $orm->findByLastName("Singh");
     printContacts($contacts);
 
