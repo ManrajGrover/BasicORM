@@ -1,89 +1,87 @@
 <?php
-    /**
-     * Require DbAccess
-     */
-    require_once('DbAccess.php');
-
     class ORM {
+        private $dbHost;
+        private $username;
+        private $password;
+        private $port;
+        private $dbName;
+
+        private $conn;
 
         /**
-         * Constructor for ORM, creates instance of DbAccess and stores the connection
+         * Constructor for DbAccess
          * @param String $_dbHost   Database Host
-         * @param String $_port     Port Number
-         * @param String $_username User's username of database
-         * @param String $_password User's password for user of database
-         * @param String $_dbName   Database name
+         * @param String $_port     Port number
+         * @param String $_username User's username
+         * @param String $_password User's password
+         * @param String $_dbName   Database Name
          */
         public function __construct($_dbHost, $_port, $_username, $_password, $_dbName) {
-            $this->db = new DbAccess($_dbHost, $_port, $_username, $_password, $_dbName);
-            $this->connection = $this->db->connect();
+            $this->dbHost = $_dbHost;
+            $this->port = $_port;
+            $this->username = $_username;
+            $this->password = $_password;
+            $this->dbName = $_dbName;
         }
 
         /**
-         * Generates objects from results of query
-         * @param  Array $contacts  Query result whose objects need to be generated
-         * @return Array            Array of Objects 
+         * Connect to database
+         * @return Object Connection object
          */
-        private function getObjects($contacts) {
-            $results = array();
-
-            foreach($contacts as $contact) {
-                $results[] = new Contact($contact["first_name"], $contact["last_name"], $contact["phone_number"]);
+        public function connect() {
+            if ($this->conn === null) {
+                $options = array(
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    PDO::ATTR_EMULATE_PREPARES => false
+                );
+                $this->conn = new PDO("mysql:host=$this->dbHost:$this->port;dbname=$this->dbName", $this->username, $this->password, $options);
             }
-
-            return $results;
+            return $this->conn;
         }
 
         /**
-         * Finds contacts by their first name
-         * @param  String $_firstName First name to be searched
-         * @return Array              Array of Objects of contacts with given first name
+         * Executes the query and returns the fetched rows
+         * @param  Object $_query Prepared query to be executed
+         * @param  String $params Parameters to be used in prepared query
+         * @return Array          Array of rows fetched from database
          */
-        public function findByFirstName($_firstName) {
-            if(!is_string($_firstName) || empty($_firstName)) {
-                throw new Error("Invalid parameters passed");
-            }
+        public function query($_query, $params) {
+            $db_connect = $this->connect();
+            $_query->execute($params);
 
-            $fields = array("first_name", "last_name", "phone_number");
-            $filters = array("first_name" => $_firstName);
-            $results = $this->db->select("contact", $fields, $filters);
-
-            return $this->getObjects($results);
+            return $_query->fetchAll();
         }
 
         /**
-         * Finds contacts by their last name
-         * @param  String $_lastName  Last name to be searched
-         * @return Array              Array of Objects of contacts with given last name
+         * Generates dynamic query based on fields and filters
+         * @param  String       $_table  Table name
+         * @param  Array/String $_fields Fields to be fetched, defaults to all
+         * @param  Array        $_where  Array of filters
+         * @return Array                 Array of rows fetched from database
          */
-        public function findByLastName($_lastName) {
-            if(!is_string($_lastName) || empty($_lastName)) {
-                throw new Error("Invalid parameters passed");
+        public function select($_table, $_fields = '*', $_where = array()) {
+            $db_connect = $this->connect();
+
+            if(is_array($_fields)) {
+                $_fields = implode(',', $_fields);
             }
-
-            $fields = array("first_name", "last_name", "phone_number");
-            $filters = array("last_name" => $_lastName);
-            $results = $this->db->select("contact", $fields, $filters);
-
-            return $this->getObjects($results);
-        }
-
-        /**
-         * Finds contacts by their phone number
-         * @param  String $_phoneNumber Phone number to be searched
-         * @return Array                Array of Objects of contacts with given phone number
-         */
-        public function findByPhoneNumber($_phoneNumber) {
-            if(!is_string($_phoneNumber) || empty($_phoneNumber)) {
-                throw new Error("Invalid parameters passed");
+            $filters = array();
+            if (count($_where) === 0 ) {
+                $prepare_query = "SELECT $_fields FROM $_table";
             }
+            else {
 
-            $fields = array("first_name", "last_name", "phone_number");
-            $filters = array("phone_number" => $_phoneNumber);
-            $results = $this->db->select("contact", $fields, $filters);
+                foreach ($_where as $key => $value) {
+                    $filters[] = $key.' = :'.$key;
+                }
 
-            return $this->getObjects($results);
+                $prepare_query = "SELECT $_fields FROM $_table WHERE ".implode(" AND ", $filters);
+            }
+            
+            $query = $db_connect->prepare($prepare_query);
+            
+            return $this->query($query, $_where);
         }
-
     }
 ?>

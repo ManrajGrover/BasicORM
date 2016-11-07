@@ -1,5 +1,5 @@
 <?php
-    require_once('ORM.php');
+    require_once('ContactDao.php');
     require_once('Contact.php');
 
     function printContacts($contacts) {
@@ -8,17 +8,17 @@
         }
     }
 
-    $orm = new ORM("localhost", "8889", "root", "root", "contacts");
+    $dao = new ContactDao("localhost", "8889", "root", "root", "contacts");
 
     echo "Contacts with First Name Ram are: \n";
-    $contacts = $orm->findByFirstName("Ram");
+    $contacts = $dao->findByFirstName("Ram");
     printContacts($contacts);
 
     echo "Contacts with Last Name Singh are: \n";
-    $contacts = $orm->findByLastName("Singh");
+    $contacts = $dao->findByLastName("Singh");
     printContacts($contacts);
 
     echo "Contacts with Phone Number 8765434343 are: \n";
-    $contacts = $orm->findByPhoneNumber("8765434343");
+    $contacts = $dao->findByPhoneNumber("8765434343");
     printContacts($contacts);
 ?>
